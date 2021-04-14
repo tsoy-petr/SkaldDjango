@@ -1,3 +1,5 @@
+import os
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -30,7 +32,6 @@ def im_get_by_uuid_good(request, uuid_good):
 
 @api_view(http_method_names=['GET'])
 def im_delete(request, uuid):
-
     try:
         imageObject = list(ImageGood.objects.filter(uuid=uuid))
         for im in imageObject:
@@ -46,3 +47,10 @@ def im_delete(request, uuid):
     ImageGood.objects.filter(uuid=uuid).delete()
 
     return Response('OK')
+
+
+@api_view(http_method_names=['POST'])
+def goods_post_paginate(request):
+    queryset = Good.objects.all()
+    serializer_class = ImageGoodSerializer
+    pagination_class = ResultsSetPaginationGoods

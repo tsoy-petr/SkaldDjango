@@ -1,7 +1,7 @@
-
 from django.db import models
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
+from rest_framework.pagination import PageNumberPagination
 
 
 class ImageGood(models.Model):
@@ -35,9 +35,9 @@ class ImageGoodSerializer(serializers.ModelSerializer):
 class Good(models.Model):
     uuid = models.CharField(primary_key=True, max_length=36)
     name = models.CharField(max_length=300)
-    uuid_parent = models.CharField(max_length=36)
-    isGroup = models.BooleanField(default=False)
-    article_number = models.CharField(max_length=50, default="")
+    uuid_parent = models.CharField(max_length=36, default="", blank=True)
+    isGroup = models.BooleanField(default=False, blank=True)
+    article_number = models.CharField(max_length=50, default="", blank=True)
 
 
 class GoodSerializer(serializers.ModelSerializer):
@@ -51,4 +51,11 @@ class GoodSerializer(serializers.ModelSerializer):
             uuid_parent = validated_data.pop('uuid_parent')
             isGroup = validated_data.pop('isGroup')
             article_number = validated_data.pop('article_number')
-            return Good.objects.create(uuid=uuid, name=name, uuid_parent=uuid_parent, isGroup=isGroup, article_number=article_number)
+            return Good.objects.create(uuid=uuid, name=name, uuid_parent=uuid_parent, isGroup=isGroup,
+                                       article_number=article_number)
+
+
+class ResultsSetPaginationGoods(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 100000
