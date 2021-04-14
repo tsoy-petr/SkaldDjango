@@ -36,4 +36,4 @@ class ImageGoodSerializer(serializers.ModelSerializer):
 class Good(models.Model):
     uuid = models.CharField(primary_key=True, max_length=36)
     name = models.CharField(max_length=300)
-    uuid_parent = models.CharField(primary_key=True, max_length=36)
+    uuid_parent = models.CharField(max_length=36)
