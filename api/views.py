@@ -59,3 +59,15 @@ def goods_post_paginate(request):
     serializer = GoodSerializer(context, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
+@api_view(http_method_names=['GET'])
+def getPartGoods(request, uuid_part, pre_uuid_parts):
+
+    try:
+        Good.objects.filter(pre_uuid_parts).delete()
+    except Exception as err:
+        print(err)
+
+    query_set = Good.objects.filter(uuid_part=uuid_part)
+    data = GoodSerializer(query_set, many=True)
+    return Response(data.data)

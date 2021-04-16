@@ -38,12 +38,13 @@ class Good(models.Model):
     uuid_parent = models.CharField(max_length=36, default="", blank=True)
     isGroup = models.BooleanField(default=False, blank=True)
     article_number = models.CharField(max_length=50, default="", blank=True)
+    uuid_part = models.CharField(max_length=36, blank=True)
 
 
 class GoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Good
-        fields = ('uuid', 'name', 'uuid_parent', 'isGroup', 'article_number')
+        fields = ('uuid', 'name', 'uuid_parent', 'isGroup', 'article_number', 'uuid_part')
 
         def create(self, validated_data):
             uuid = validated_data.pop('uuid')
@@ -51,8 +52,9 @@ class GoodSerializer(serializers.ModelSerializer):
             uuid_parent = validated_data.pop('uuid_parent')
             isGroup = validated_data.pop('isGroup')
             article_number = validated_data.pop('article_number')
+            uuid_part = validated_data.pop('uuid_part')
             return Good.objects.create(uuid=uuid, name=name, uuid_parent=uuid_parent, isGroup=isGroup,
-                                       article_number=article_number)
+                                       article_number=article_number, uuid_part=uuid_part)
 
 
 class ResultsSetPaginationGoods(PageNumberPagination):
