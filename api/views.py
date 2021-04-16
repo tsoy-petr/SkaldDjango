@@ -1,7 +1,9 @@
 import os
 
+from django.views.generic import ListView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
 from .models import *
 
@@ -49,8 +51,11 @@ def im_delete(request, uuid):
     return Response('OK')
 
 
-@api_view(http_method_names=['POST'])
+@api_view(http_method_names=['GET'])
 def goods_post_paginate(request):
-    queryset = Good.objects.all()
-    serializer_class = ImageGoodSerializer
-    pagination_class = ResultsSetPaginationGoods
+    paginator = PageNumberPagination()
+    query_set = Good.objects.all()
+    context = paginator.paginate_queryset(query_set, request)
+    serializer = GoodSerializer(context, many=True)
+    return paginator.get_paginated_response(serializer.data)
+
