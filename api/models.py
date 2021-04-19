@@ -1,3 +1,5 @@
+from abc import ABC
+
 from django.db import models
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
@@ -33,15 +35,39 @@ class ImageGoodSerializer(serializers.ModelSerializer):
 
 
 class Good(models.Model):
-    uuid = models.CharField(primary_key=True, max_length=36)
-    name = models.CharField(max_length=300)
+    id_uuid = models.BigAutoField(primary_key=True, auto_created=True)
+    uuid = models.CharField(max_length=36, default='')
+    name = models.CharField(max_length=300, default='')
     uuid_parent = models.CharField(max_length=36, default="", blank=True)
     isGroup = models.BooleanField(default=False, blank=True)
     article_number = models.CharField(max_length=50, default="", blank=True)
     uuid_part = models.CharField(max_length=36, blank=True)
 
+    class Meta:
+        unique_together = ('uuid', 'uuid_part')
+
+
+class GoodPartsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Good
+        fields = list('uuid_part')
+
 
 class GoodSerializer(serializers.ModelSerializer):
+    # def __init__(self, *args, **kwargs):
+    #     # Don't pass the 'fields' arg up to the superclass
+    #     fields = kwargs.pop('fields', None)
+    #
+    #     # Instantiate the superclass normally
+    #     super(GoodSerializer, self).__init__(*args, **kwargs)
+    #
+    #     if fields is not None:
+    #         # Drop any fields that are not specified in the `fields` argument.
+    #         allowed = set(fields)
+    #         existing = set(self.fields)
+    #         for field_name in existing - allowed:
+    #             self.fields.pop(field_name)
+
     class Meta:
         model = Good
         fields = ('uuid', 'name', 'uuid_parent', 'isGroup', 'article_number', 'uuid_part')

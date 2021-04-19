@@ -1,10 +1,8 @@
 import os
 
-from django.views.generic import ListView
+from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-
 from .models import *
 
 
@@ -61,13 +59,48 @@ def goods_post_paginate(request):
 
 
 @api_view(http_method_names=['GET'])
-def getPartGoods(request, uuid_part, pre_uuid_parts):
+def getDescriptionParts(request):
+    response_data = {}
+    import json
 
+    from django.core import serializers
     try:
-        Good.objects.filter(pre_uuid_parts).delete()
+        query_set = Good.objects.values_list('uuid_part').distinct()
+        data = []
+        for el in query_set:
+            tp = tuple(el)
+            if tp.__sizeof__() > 0:
+                data.append(tp[0])
+
+        response_data['success'] = True
+        response_data['message'] = 'OK'
+        response_data['data'] = data
+    except Exception as err:
+        response_data['success'] = False
+        response_data['message'] = err.__str__()
+        response_data['data'] = ''
+
+    return JsonResponse(response_data, safe=True)
+
+
+@api_view(http_method_names=['GET'])
+def getPartGoods(request, uuid_part, pre_uuid_parts):
+    try:
+        Good.objects.filter(uuid_part=pre_uuid_parts).delete()
     except Exception as err:
         print(err)
 
-    query_set = Good.objects.filter(uuid_part=uuid_part)
-    data = GoodSerializer(query_set, many=True)
-    return Response(data.data)
+    response_data = {}
+
+    try:
+        query_set = Good.objects.filter(uuid_part=uuid_part)
+        data = GoodSerializer(query_set, many=True)
+        response_data['success'] = True
+        response_data['message'] = 'OK'
+        response_data['data'] = data.data
+    except Exception as err:
+        response_data['success'] = False
+        response_data['message'] = err.__str__()
+        response_data['data'] = ''
+
+    return JsonResponse(response_data, safe=True)
