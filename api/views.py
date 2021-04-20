@@ -61,9 +61,6 @@ def goods_post_paginate(request):
 @api_view(http_method_names=['GET'])
 def getDescriptionParts(request):
     response_data = {}
-    import json
-
-    from django.core import serializers
     try:
         query_set = Good.objects.values_list('uuid_part').distinct()
         data = []
@@ -84,23 +81,33 @@ def getDescriptionParts(request):
 
 
 @api_view(http_method_names=['GET'])
-def getPartGoods(request, uuid_part, pre_uuid_parts):
+def getPartGoods(request):
+
+    uuid_part = request.GET.get('uuid_part')
+    pre_uuid_parts = request.GET.get('pre_uuid_parts')
+
     try:
-        Good.objects.filter(uuid_part=pre_uuid_parts).delete()
+        if pre_uuid_parts is not None and pre_uuid_parts:
+            Good.objects.filter(uuid_part=pre_uuid_parts).delete()
     except Exception as err:
         print(err)
 
     response_data = {}
 
-    try:
-        query_set = Good.objects.filter(uuid_part=uuid_part)
-        data = GoodSerializer(query_set, many=True)
-        response_data['success'] = True
-        response_data['message'] = 'OK'
-        response_data['data'] = data.data
-    except Exception as err:
+    if uuid_part is not None and uuid_part:
+        try:
+            query_set = Good.objects.filter(uuid_part=uuid_part)
+            data = GoodSerializer(query_set, many=True)
+            response_data['success'] = True
+            response_data['message'] = 'OK'
+            response_data['data'] = data.data
+        except Exception as err:
+            response_data['success'] = False
+            response_data['message'] = err.__str__()
+            # response_data['data'] = ''
+    else:
         response_data['success'] = False
-        response_data['message'] = err.__str__()
-        response_data['data'] = ''
+        response_data['message'] = 'Нет данных'
+        # response_data['data'] = ''
 
     return JsonResponse(response_data, safe=True)

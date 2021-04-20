@@ -9,6 +9,6 @@ urlpatterns = [
     path('downloadByUuidGood/<str:uuid_good>', im_get_by_uuid_good, name='im-get-by-uuid-good'),
     path('delete/<str:uuid>', im_delete, name='im-delete'),
     path('goodsPaginate/', goods_post_paginate, name='goods-paginate'),
-    path('getPartGoods/<str:uuid_part>/<str:pre_uuid_parts>', getPartGoods, name='goods-part'),
+    path('getPartGoods/', getPartGoods, name='goods-part'),
     path('getDescriptionParts', getDescriptionParts, name='get-description-parts')
 ]
