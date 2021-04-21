@@ -83,17 +83,18 @@ def getDescriptionParts(request):
 @api_view(http_method_names=['GET'])
 def getPartGoods(request):
 
-    uuid_part = request.GET.get('uuid_part')
-    pre_uuid_parts = request.GET.get('pre_uuid_parts')
+    uuid_part = request.GET.get('uuid_package')
+    pre_uuid_parts = request.GET.get('pre_uuid_package')
 
-    try:
-        if pre_uuid_parts is not None and pre_uuid_parts:
-            Good.objects.filter(uuid_part=pre_uuid_parts).delete()
-    except Exception as err:
-        print(err)
+    # try:
+    #     if pre_uuid_parts is not None and pre_uuid_parts:
+    #         Good.objects.filter(uuid_part=pre_uuid_parts).delete()
+    # except Exception as err:
+    #     print(err)
 
     response_data = {}
-
+    print(uuid_part)
+    print(pre_uuid_parts)
     if uuid_part is not None and uuid_part:
         try:
             query_set = Good.objects.filter(uuid_part=uuid_part)
@@ -104,7 +105,7 @@ def getPartGoods(request):
         except Exception as err:
             response_data['success'] = False
             response_data['message'] = err.__str__()
-            # response_data['data'] = ''
+            response_data['data'] = ''
     else:
         response_data['success'] = False
         response_data['message'] = 'Нет данных'
