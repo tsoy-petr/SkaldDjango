@@ -120,3 +120,9 @@ def good_post(request):
         return Response(serializer.data, status=201)
     else:
         return Response(serializer.errors, status=400)
+
+
+@api_view(http_method_names=['GET'])
+def goods_deleteAll(request):
+    Good.objects.all().delete()
+    return Response('OK')

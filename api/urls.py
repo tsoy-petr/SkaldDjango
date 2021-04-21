@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import im_post, im_get, im_get_by_uuid_good, im_delete, goods_post_paginate, getPartGoods, \
-    getDescriptionParts, good_post
+    getDescriptionParts, good_post, goods_deleteAll
 
 urlpatterns = [
     path('upload/', im_post, name='im-post'),
@@ -11,5 +11,6 @@ urlpatterns = [
     path('goodsPaginate/', goods_post_paginate, name='goods-paginate'),
     path('getPartGoods/', getPartGoods, name='goods-part'),
     path('getDescriptionParts', getDescriptionParts, name='get-description-parts'),
-    path('uploadGood/', good_post, name='good - parts')
+    path('uploadGood/', good_post, name='good - parts'),
+    path('deleteAllGoods/', goods_deleteAll, name='goods - deleteAll')
 ]
